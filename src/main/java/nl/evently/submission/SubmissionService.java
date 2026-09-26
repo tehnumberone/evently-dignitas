@@ -1,0 +1,41 @@
+package nl.evently.submission;
+
+import nl.evently.form.FormNotFoundException;
+import nl.evently.form.FormRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@Transactional(readOnly = true)
+public class SubmissionService {
+
+    private final FormRepository forms;
+    private final SubmissionRepository submissions;
+
+    public SubmissionService(FormRepository forms, SubmissionRepository submissions) {
+        this.forms = forms;
+        this.submissions = submissions;
+    }
+
+    @Transactional
+    public SubmissionResponse submit(UUID formId, SubmitRequest request) {
+        if (!forms.existsById(formId)) {
+            throw new FormNotFoundException(formId);
+        }
+        Submission submission = submissions.save(new Submission(formId, request.answers()));
+        return SubmissionResponse.from(submission);
+    }
+
+    public List<SubmissionResponse> findByForm(UUID formId) {
+        // Without this check an unknown form would return an empty list instead of 404.
+        if (!forms.existsById(formId)) {
+            throw new FormNotFoundException(formId);
+        }
+        return submissions.findByFormIdOrderByCreatedAtAsc(formId).stream()
+                .map(SubmissionResponse::from)
+                .toList();
+    }
+}
