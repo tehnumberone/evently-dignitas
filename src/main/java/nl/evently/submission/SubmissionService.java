@@ -1,11 +1,13 @@
 package nl.evently.submission;
 
+import nl.evently.form.Form;
 import nl.evently.form.FormNotFoundException;
 import nl.evently.form.FormRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -22,8 +24,10 @@ public class SubmissionService {
 
     @Transactional
     public SubmissionResponse submit(UUID formId, SubmitRequest request) {
-        if (!forms.existsById(formId)) {
-            throw new FormNotFoundException(formId);
+        Form form = forms.findById(formId).orElseThrow(() -> new FormNotFoundException(formId));
+        Map<String, String> errors = SubmissionValidator.validate(form.getFields(), request.answers());
+        if (!errors.isEmpty()) {
+            throw new SubmissionValidationException(errors);
         }
         Submission submission = submissions.save(new Submission(formId, request.answers()));
         return SubmissionResponse.from(submission);
