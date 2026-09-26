@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: evently
+      POSTGRES_USER: evently
+      # Dev-only password. No port, only app container can reach it
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-evently}
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U evently -d evently"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/evently
+      DB_USER: evently
+      DB_PASSWORD: ${DB_PASSWORD:-evently}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
