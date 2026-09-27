@@ -9,9 +9,6 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
-/**
- * One field of a form. Used as request body and stored as JSON in the form table.
- */
 public record FieldDefinition(
         @NotBlank
         @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9_]{0,49}$",
@@ -28,7 +25,7 @@ public record FieldDefinition(
 ) {
 
     public FieldDefinition {
-        required = Boolean.TRUE.equals(required); // omitted means optional
+        required = Boolean.TRUE.equals(required);
     }
 
     @JsonIgnore

@@ -28,12 +28,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Both kinds of validation (Bean Validation on the form, runtime validation of a submission)
- * must reach the client as the same 400 ProblemDetail with an {@code errors} map.
- */
 @WebMvcTest({FormController.class, SubmissionController.class})
-@Import(SubmissionService.class) // real service, so the real validator runs
+@Import(SubmissionService.class)
 class ValidationErrorResponseTest {
 
     @Autowired

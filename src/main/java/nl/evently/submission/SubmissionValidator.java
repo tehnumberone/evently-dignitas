@@ -11,24 +11,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/**
- * Checks answers against a form's field definitions. The form's shape is data, so this runs at runtime
- * instead of through Bean Validation annotations.
- */
 final class SubmissionValidator {
 
     static final int MAX_TEXT_LENGTH = 1000;
     private static final int MAX_EMAIL_LENGTH = 254;
-    // Deliberately loose: something@something.tld. Real proof of an address is sending mail to it.
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     private SubmissionValidator() {
     }
 
-    /**
-     * Returns field name -> error message for every problem found, so the client can fix all at once.
-     * An empty map means the answers are valid.
-     */
     static Map<String, String> validate(List<FieldDefinition> fields, Map<String, Object> answers) {
         Map<String, String> errors = new LinkedHashMap<>();
         Set<String> known = new HashSet<>();
@@ -44,7 +35,6 @@ final class SubmissionValidator {
             if (error != null) errors.put(field.name(), error);
         }
 
-        // Whitelist: nothing is stored that the form doesn't define.
         for (String name : answers.keySet()) {
             if (!known.contains(name)) errors.put(name, "is not a field of this form");
         }

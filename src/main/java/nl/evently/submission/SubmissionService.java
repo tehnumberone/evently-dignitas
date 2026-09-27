@@ -39,7 +39,6 @@ public class SubmissionService {
     }
 
     public List<SubmissionResponse> findByForm(UUID formId) {
-        // Without this check an unknown form would return an empty list instead of 404.
         if (!forms.existsById(formId)) {
             throw new FormNotFoundException(formId);
         }

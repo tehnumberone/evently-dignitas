@@ -19,11 +19,9 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    // Plain id instead of @ManyToOne: we never navigate to the form, the FK guards integrity.
     @Column(nullable = false, updatable = false)
     private UUID formId;
 
-    // Answers have a different shape per form, so they are stored as one JSONB document.
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false)
     private Map<String, Object> answers;

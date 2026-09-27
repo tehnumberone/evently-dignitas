@@ -59,10 +59,9 @@ class SubmissionValidatorTest {
         answers.put("naam", 42);
         answers.put("email", "not-an-email");
         answers.put("datum", "2026-13-01");
-        answers.put("aantal", "3"); // a string, not a number
+        answers.put("aantal", "3");
         answers.put("dieet", "vis");
 
-        // Exact messages: a type error must never be reported as "is required".
         assertThat(SubmissionValidator.validate(FIELDS, answers)).containsExactlyInAnyOrderEntriesOf(Map.of(
                 "naam", "must be text of at most " + SubmissionValidator.MAX_TEXT_LENGTH + " characters",
                 "email", "must be a valid email address",

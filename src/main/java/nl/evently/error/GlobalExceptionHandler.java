@@ -38,7 +38,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, validationProblem(errors), headers, status, request);
     }
 
-    // Anything we didn't foresee: log it for us, tell the client nothing about the internals.
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleUnexpected(Exception ex) {
         logger.error("Unexpected error", ex);

@@ -6,9 +6,6 @@ import org.springframework.web.ErrorResponseException;
 
 import java.util.Map;
 
-/**
- * 400 with an {@code errors} map (field name -> message), same shape as Bean Validation failures.
- */
 public class SubmissionValidationException extends ErrorResponseException {
 
     SubmissionValidationException(Map<String, String> errors) {

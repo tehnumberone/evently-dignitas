@@ -5,5 +5,4 @@ CREATE TABLE submission (
     created_at TIMESTAMPTZ NOT NULL
 );
 
--- Submissions are always fetched per form.
 CREATE INDEX idx_submission_form_id ON submission (form_id);

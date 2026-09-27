@@ -22,7 +22,6 @@ public class Form {
     @Column(nullable = false)
     private String name;
 
-    // Field definitions differ per form, so they are stored as one JSONB document.
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false)
     private List<FieldDefinition> fields;
