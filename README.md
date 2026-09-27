@@ -12,7 +12,7 @@ docker compose up --build
 The API runs on `http://localhost:8080`. Only Docker is needed; the app is built inside the container.
 `docker compose down -v` stops everything and wipes the database.
 
-Tests (needs Java 21): `./mvnw test`
+Tests (needs Java 21 and Docker): `./mvnw test`. `FormFlowIntegrationTest` runs the whole flow against a real Postgres via Testcontainers.
 
 ## API
 
@@ -110,5 +110,4 @@ A form's structure is data, not code: field definitions are stored with the form
 - Authentication and authorisation, as described above.
 - Pagination on submissions.
 - Form versioning, so forms can be edited.
-- Integration tests against a real Postgres (Testcontainers).
 - Rate limiting on the public submit endpoint.
