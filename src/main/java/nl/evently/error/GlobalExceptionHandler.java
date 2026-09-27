@@ -33,6 +33,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, String> errors = new TreeMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.merge(error.getField(), error.getDefaultMessage(), (a, b) -> a + "; " + b));
+        logger.warn("Validation failed for " + ex.getParameter().getParameterType().getSimpleName()
+                + ": " + errors.keySet());
         return handleExceptionInternal(ex, validationProblem(errors), headers, status, request);
     }
 

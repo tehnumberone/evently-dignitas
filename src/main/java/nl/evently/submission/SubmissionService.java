@@ -3,6 +3,8 @@ package nl.evently.submission;
 import nl.evently.form.Form;
 import nl.evently.form.FormNotFoundException;
 import nl.evently.form.FormRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,8 @@ import java.util.UUID;
 @Service
 @Transactional(readOnly = true)
 public class SubmissionService {
+
+    private static final Logger log = LoggerFactory.getLogger(SubmissionService.class);
 
     private final FormRepository forms;
     private final SubmissionRepository submissions;
@@ -27,6 +31,7 @@ public class SubmissionService {
         Form form = forms.findById(formId).orElseThrow(() -> new FormNotFoundException(formId));
         Map<String, String> errors = SubmissionValidator.validate(form.getFields(), request.answers());
         if (!errors.isEmpty()) {
+            log.warn("Rejected submission for form {}: {} invalid field(s)", formId, errors.size());
             throw new SubmissionValidationException(errors);
         }
         Submission submission = submissions.save(new Submission(formId, request.answers()));
