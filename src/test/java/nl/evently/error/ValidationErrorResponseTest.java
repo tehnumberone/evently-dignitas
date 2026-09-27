@@ -19,6 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,6 +54,18 @@ class ValidationErrorResponseTest {
         assertThat(response).bodyJson().extractingPath("$.title").isEqualTo("Validation failed");
         assertThat(response).bodyJson().extractingPath("$.errors").asMap()
                 .containsOnlyKeys("name", "fields[0].name");
+    }
+
+    @Test
+    void duplicateFieldNamesAreReportedOnFields() {
+        var response = mvc.post().uri("/api/forms")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"name": "Workshop", "fields": [{"name": "naam", "type": "TEXT"}, {"name": "naam", "type": "EMAIL"}]}""");
+
+        assertThat(response).hasStatus(HttpStatus.BAD_REQUEST);
+        assertThat(response).bodyJson().extractingPath("$.errors").asMap()
+                .containsOnly(Map.entry("fields", "field names must be unique"));
     }
 
     @Test
