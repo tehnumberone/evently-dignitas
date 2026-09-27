@@ -56,6 +56,18 @@ class ValidationErrorResponseTest {
     }
 
     @Test
+    void unknownFieldTypeNamesTheFieldAndTheAllowedTypes() {
+        var response = mvc.post().uri("/api/forms")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"name": "Workshop", "fields": [{"name": "naam", "type": "text"}]}""");
+
+        assertThat(response).hasStatus(HttpStatus.BAD_REQUEST);
+        assertThat(response).bodyJson().extractingPath("$.errors").asMap()
+                .containsEntry("fields[0].type", "must be one of [TEXT, EMAIL, NUMBER, DATE, CHOICE]");
+    }
+
+    @Test
     void invalidSubmissionReturns400WithFieldErrorsAndIsNotStored() {
         UUID formId = UUID.randomUUID();
         when(forms.findById(formId)).thenReturn(Optional.of(new Form("Workshop", List.of(

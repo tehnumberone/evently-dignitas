@@ -62,6 +62,7 @@ An invalid submission returns every problem at once:
 | `CHOICE` | one of the field's `options` (required for this type only) |
 
 `required` defaults to `false`. An empty or blank answer counts as missing.
+An unknown `type` is reported per field too, e.g. `"fields[0].type": "must be one of [TEXT, EMAIL, NUMBER, DATE, CHOICE]"`.
 
 All errors, including 404, 405 and broken JSON, use the standard ProblemDetail format (RFC 9457).
 
